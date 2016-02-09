@@ -8,6 +8,16 @@ h1 Admin
 		.form-group
 			button.btn.btn-default(type="submit") Submit
 
+table.table.table-bordered
+	thead
+		tr
+			th Name
+			th Date
+	tbody
+		tr(ng-repeat="user in users")
+			td(ng-bind="user.name")
+			td(ng-bind="user.created")
+
 hr
 .well.well-sm
 	form(name="cityForm" novalidate ng-submit="admin.submitForm(cityForm)")
@@ -16,7 +26,7 @@ hr
 			input#city.form-control(type="text" ng-model="city" placeholder="Enter name" required)
 		.form-group
 			button.btn.btn-default(type="submit") Submit
-
+hr
 .well.well-sm
 	form(name="institutionForm" novalidate ng-submit="admin.submitForm(institutionForm)")
 		.form-group

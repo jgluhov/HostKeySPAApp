@@ -1,5 +1,15 @@
 {
   "server": {
     "port": 1337
+  },
+  "database": {
+    "uri": "mongodb://jgluhov:Mathemat1cs@ds055865.mongolab.com:55865/heroku_8p4mxh5h",
+    "options": {
+      "server": {
+        "socketOptions": {
+          "keepAlive": 1
+        }
+      }
+    }
   }
 }
