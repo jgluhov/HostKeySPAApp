@@ -1,0 +1,22 @@
+{
+  "name": "host-key-spa-app-server",
+  "version": "0.0.0",
+  "description": "HostKey SPA App Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon ."
+  },
+  "keywords": [
+    "HostKey",
+    "SPA",
+    "server"
+  ],
+  "author": "JGluhov",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.7.1",
+    "express": "^4.13.4",
+    "nconf": "^0.8.4",
+    "path": "^0.12.7"
+  }
+}

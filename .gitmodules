@@ -1,0 +1,3 @@
+[submodule "HostKeyAppSPAServer"]
+	path = HostKeyAppSPAServer
+	url = https://github.com/jgluhov/HostKeyAppSPAServer.git
