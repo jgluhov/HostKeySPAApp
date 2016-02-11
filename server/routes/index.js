@@ -30,8 +30,15 @@ router.post('/users', (req, res) => {
 
 	let user = new User({name: name});
 	user.save((err, saved) => {
-		if(err) throw err;
+		if (err) throw err;
 		res.json({user: saved});
+	});
+});
+
+router.delete('/users/:id', (req, res) => {
+	User.remove({_id: req.params.id}, (err) => {
+		if (err) throw err;
+		res.json({message: 'OK'});
 	});
 });
 
