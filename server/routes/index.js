@@ -5,7 +5,6 @@
 
 const express = require('express');
 const router = express.Router();
-
 const User = require('../models/user').User;
 const City = require('../models/city').City;
 const Institution = require('../models/institution').Institution;
@@ -33,40 +32,28 @@ router.get('/institutions', (req, res) => {
 });
 
 router.post('/users', (req, res) => {
-	let name = req.body.name;
+	let name = req.body.data;
 
 	let user = new User({name: name});
 	user.save((err, saved) => {
 		if (err) throw err;
-		res.json({users: saved});
+		res.json({user: saved});
 	});
 });
 
 router.delete('/users/:id', (req, res) => {
-	User.findByIdAndRemove(req.params.id, (err) => {
+	User.remove({_id: req.params.id}, (err) => {
 		if (err) throw err;
 		res.json({message: 'OK'});
 	});
 });
 
 router.post('/cities', (req, res) => {
-	let name = req.body.name;
-
-	let city = new City({name: name});
-	city.save((err, saved) => {
-		if (err) throw err;
-		res.json({cities: saved});
-	})
+	res.json({message: 'OK'});
 });
 
 router.post('/institutions', (req, res) => {
-	let name = req.body.name;
-
-	let institution = new Institution({name: name});
-	institution.save((err, saved) => {
-		if (err) throw err;
-		res.json({institutions: saved});
-	})
+	res.json({message: 'OK'});
 });
 
 module.exports = router;

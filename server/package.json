@@ -4,7 +4,7 @@
   "description": "HostKey SPA App Server",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ."
+    "test": "nodemon ."
   },
   "keywords": [
     "HostKey",
