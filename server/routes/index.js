@@ -4,6 +4,7 @@
 'use strict';
 
 const express = require('express');
+const url = require('url');
 const router = express.Router();
 const User = require('../models/user').User;
 const City = require('../models/city').City;
@@ -14,7 +15,9 @@ router.get('/', (req, res) => {
 });
 
 router.get('/users', (req, res) => {
-	User.find({}, (err, users) => {
+	console.log(req.query);
+
+	User.find({}).populate(['city','institution']).exec((err, users) => {
 		res.json({users: users});
 	})
 });
@@ -32,28 +35,63 @@ router.get('/institutions', (req, res) => {
 });
 
 router.post('/users', (req, res) => {
-	let name = req.body.data;
-
-	let user = new User({name: name});
+	let user = new User ({
+		name: req.body.item.name,
+		city: req.body.item.cityID,
+		institution: req.body.item.institutionID
+	});
+	console.log(user);
 	user.save((err, saved) => {
 		if (err) throw err;
-		res.json({user: saved});
+		User.populate(saved, [
+			{path: 'city'},
+			{path: 'institution'}
+		], (err, user) => {
+			if(err) throw err;
+			res.json({users: user});
+		})
 	});
 });
 
 router.delete('/users/:id', (req, res) => {
-	User.remove({_id: req.params.id}, (err) => {
+	User.findOneAndRemove(req.params.id, (err) => {
 		if (err) throw err;
 		res.json({message: 'OK'});
 	});
 });
 
 router.post('/cities', (req, res) => {
-	res.json({message: 'OK'});
+	let name = req.body.item.name;
+
+	let city = new City({name: name});
+	city.save((err, saved) => {
+		if (err) throw err;
+		res.json({cities: saved});
+	});
+});
+
+router.delete('/cities/:id', (req, res) => {
+	City.findOneAndRemove(req.params.id, (err) => {
+		if (err) throw err;
+		res.json({message: 'OK'});
+	});
 });
 
 router.post('/institutions', (req, res) => {
-	res.json({message: 'OK'});
+	let name = req.body.item.name;
+
+	let institution = new Institution({name: name});
+	institution.save((err, saved) => {
+		if (err) throw err;
+		res.json({institutions: saved});
+	});
+});
+
+router.delete('/institutions/:id', (req, res) => {
+	Institution.findOneAndRemove(req.params.id, (err) => {
+		if (err) throw err;
+		res.json({message: 'OK'});
+	});
 });
 
 module.exports = router;

@@ -1,52 +1,56 @@
 /**
  * Created by jgluhov on 09/02/16.
  */
+import angular from 'angular';
+
 export default class AdminController {
-	constructor($scope, AppConstants, AdminService) {
+	constructor($scope, AppConstants, DataService) {
 		this.$scope = $scope;
-		this.adminService = AdminService;
+		this.dataService = DataService;
 		this.appConstants = AppConstants;
 
-		this.$scope.users = [];
-		this.$scope.cities = [];
-		this.$scope.institutions = [];
+		// Data arrays for tables
+		this.users = [];
+		this.cities = [];
+		this.institutions = [];
 
+		// Form models
 		$scope.user = {};
+		$scope.city = {};
+		$scope.institution = {};
 
 		// Response from server when page loaded
-		this.adminService.loadItems().subscribe(
+		this.dataService.loadItems().subscribe(
 			data => {
 				for (const key in data) {
 					if (data.hasOwnProperty(key)) {
-						this.$scope[key] = data[key];
+						this[key] = data[key];
 					}
 				}
 				this.$scope.$digest();
-			},
-			error => console.log(error)
+			}
 		);
 
 		// Response from server if create button is clicked
-		this.adminService.createItem().subscribe(data => {
-			console.log(data);
+		this.dataService.createItem().subscribe(data => {
 			for (const key in data) {
 				if (data.hasOwnProperty(key)) {
-					this.$scope[key].push(data[key]);
+					this[key].push(data[key]);
 				}
 			}
 			this.$scope.$digest();
 		});
 
 		// Response from server if delete button is clicked
-		this.adminService.deleteItem().subscribe(
+		this.dataService.deleteItem().subscribe(
 			(response) => console.log(response),
 			(error) => console.log(error)
 		);
 
 		// Requesting data from server
-		this.adminService.eventEmitter.emit('loadItems', 'users', `${this.appConstants.host}/users`);
-		this.adminService.eventEmitter.emit('loadItems', 'cities', `${this.appConstants.host}/cities`);
-		this.adminService.eventEmitter.emit('loadItems', 'institutions', `${this.appConstants.host}/institutions`);
+		this.dataService.eventEmitter.emit('loadItems', 'users', `${this.appConstants.host}/users`);
+		this.dataService.eventEmitter.emit('loadItems', 'cities', `${this.appConstants.host}/cities`);
+		this.dataService.eventEmitter.emit('loadItems', 'institutions', `${this.appConstants.host}/institutions`);
 	}
 
 	// Event handlers
@@ -54,18 +58,26 @@ export default class AdminController {
 		if (form.$invalid) {
 			return;
 		}
-		this.adminService.eventEmitter.emit('createItem', `${this.appConstants.host}/${category}`, item);
+		this.dataService.eventEmitter.emit('createItem', `${this.appConstants.host}/${category}`, angular.copy(item));
 
-		const modelName = form.$name.split('Form', 1);
-		this.$scope[modelName] = null;
-		this.$scope.$digest();
+		const model = form.$name.split('Form')[0];
+		this.$scope[model].name = undefined;
+		this.$scope.$broadcast('onChange');
 	}
 
 	deleteItem(category, item) {
-		this.adminService.eventEmitter.emit('deleteItem', `${this.appConstants.host}/${category}`, item);
-		this.$scope[category].splice(this.$scope[category].indexOf(item), 1);
-		this.$scope.$digest();
+		this.dataService.eventEmitter.emit('deleteItem', `${this.appConstants.host}/${category}`, item);
+		this[category].splice(this[category].indexOf(item), 1);
+	}
+
+	onSelect(category, item) {
+		switch (category) {
+			case 'cities': this.$scope.user.cityID = item.id; break;
+			case 'institutions': this.$scope.user.institutionID = item.id; break;
+			default: break;
+		}
+		this.$scope.$apply();
 	}
 }
 
-AdminController.$inject = ['$scope', 'AppConstants', 'AdminService'];
+AdminController.$inject = ['$scope', 'AppConstants', 'DataService'];

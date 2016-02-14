@@ -8,6 +8,14 @@ const User = new mongoose.Schema({
 		type: String,
 		required: true
 	},
+	city: {
+		type: mongoose.Schema.ObjectId,
+		ref: 'City'
+	},
+	institution: {
+		type: mongoose.Schema.ObjectId,
+		ref: 'Institution'
+	},
 	created: {
 		type: Date,
 		default: Date.now()
